@@ -1,4 +1,6 @@
+const { createUser, JWT_Cookie, createJWT } = require("../helper/authHelper");
 const User = require("../models/User");
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
 dotenv.config();
@@ -23,19 +25,30 @@ const register = async (req, res) => {
 };
 
 
-const createUser = async (req) => {
-  const hashPassword = await bcrypt.hashSync(req.body.password, 10);
-  return new User({
-    username: req.body.username,
-    email: req.body.email,
-    password: hashPassword,
-    city: req.body.city,
-    state: req.body.state,
-    phone_number: req.body.phone_number,
-    money: Math.floor(Math.random() * (10000 - 1000) + 1000),
-    adress: req.body.adress,
-    admin: req.body.admin,
-  });
-}
+const login = async (req, res) => {
+    const findUser = await User.findOne({ email: req.body.email });
+    const userPass = findUser && findUser.password;
+    const decodedPass = userPass && await bcrypt.compare(req.body.password, userPass);
+  
+    // if user exists and entered the right password
+    if (findUser && decodedPass) {
+        // generates JSON web token and store it in cookie
+        const accessToken = createJWT(findUser);
+        JWT_Cookie(res, accessToken, findUser._id);
+        res
+            .status(200)
+            .send({
+            status: "ok",
+            message: "User logged In",
+            User: findUser,
+            Token: accessToken,
+            });
+    } else {
+      res.status(500).send({ status: "error", message: "Please provide a valid email and password!" });
+    }
+};
 
-module.exports = register;
+module.exports = {
+    register,
+    login
+}; 
