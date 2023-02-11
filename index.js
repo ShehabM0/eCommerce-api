@@ -9,6 +9,7 @@ const app = express();
 dotenv.config();
 
 app.use(express.json());
+app.use(cookieParser());
 
 // database connection
 mongoose.set("strictQuery", false);
