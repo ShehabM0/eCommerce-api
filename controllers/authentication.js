@@ -48,7 +48,17 @@ const login = async (req, res) => {
     }
 };
 
+const logout = (req, res) => {
+    //check if user logged-in
+    const isLogged = req.cookies.access_token
+    if(!isLogged)
+      return res.status(404).send({ status: "error", message: "no logged-in user!!" });
+    res.cookie('access_token', '', { maxAge: 1 }); // 1ms
+    res.status(201).send({ status: "ok", message: "User Logged-out Successfully" });
+};
+
 module.exports = {
     register,
+    logout,
     login
 }; 
