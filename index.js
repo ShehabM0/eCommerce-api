@@ -1,3 +1,4 @@
+const authRoute = require("./routes/authRoutes");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
@@ -17,6 +18,11 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
+
+
+app.use("/api/auth", authRoute);
+
 
 try {
   app.listen(process.env.PORT, () => {
