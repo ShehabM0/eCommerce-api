@@ -4,7 +4,8 @@ const bcrypt = require("bcrypt");
 
 const getUser = async (req, res) => {
     try {
-        const getUser = await User.findById(req.params.id);
+        const user_id = req.params.id;
+        const getUser = await User.findById(user_id);
         if (getUser) res.status(200).send({ status: "ok", user: getUser });
         else res.status(404).send({ status: "error", message: "not found" });
     } catch (error) {
@@ -80,11 +81,36 @@ const updateUserPass = async (req, res) => {
         const err = error.message;
         res.status(500).send({ status: "error", message: err });
     }
-}
+};
+
+const deleteUser = async (req, res) => {
+    try {
+        const user_id = req.params.id;
+        let statusCode, statusMsg, messageContent;
+        const deleteUser = await User.findByIdAndDelete(user_id);
+        if (deleteUser)
+        {
+            statusCode = 200;
+            statusMsg = "ok";
+            messageContent = "User deleted successfully.";
+        } 
+        else 
+        {
+            statusCode = 404;
+            statusMsg = "error";
+            messageContent = "not found!";
+        }
+        res.status(statusCode).send({ status: statusMsg, message: messageContent });
+    } catch (error) {
+      const err = error.message;
+      res.status(500).send({ status: "error", message: err });
+    }
+};
 
 module.exports = {
     updateUserPass,
     getAllUsers,
     updateUser,
+    deleteUser,
     getUser
 };
