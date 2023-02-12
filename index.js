@@ -1,3 +1,4 @@
+const paintingRoute = require("./routes/paintingRoutes");
 const authRoute = require("./routes/authRoutes");
 const userRoute = require("./routes/userRoutes");
 const cookieParser = require("cookie-parser");
@@ -6,9 +7,11 @@ const jwt = require("jsonwebtoken");
 const express = require("express");
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
+const path = require("path");
 const app = express();
 dotenv.config();
 
+app.use(express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -22,9 +25,9 @@ mongoose
   });
 
 
-
 app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);
+app.use("/api/painting", paintingRoute);
 
 
 try {
