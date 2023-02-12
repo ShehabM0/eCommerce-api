@@ -1,4 +1,5 @@
 const authRoute = require("./routes/authRoutes");
+const userRoute = require("./routes/userRoutes");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
@@ -23,6 +24,7 @@ mongoose
 
 
 app.use("/api/auth", authRoute);
+app.use("/api/user", userRoute);
 
 
 try {
