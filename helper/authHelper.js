@@ -40,8 +40,13 @@ const JWT_Cookie = (res, token, user_id) => {
     });
 }
 
+const checkPass = async (req_pass, user_pass) => {
+  return await bcrypt.compare(req_pass, user_pass);
+}
+
 module.exports = {
-    createUser,
-    JWT_Cookie,
-    createJWT
+  createUser,
+  JWT_Cookie,
+  checkPass,
+  createJWT
 };
