@@ -1,4 +1,6 @@
+const { checkPass, JWT_Cookie, createJWT } = require("../helper/authHelper");
 const User = require("../models/User");
+const bcrypt = require("bcrypt");
 
 const getUser = async (req, res) => {
     try {
@@ -21,7 +23,37 @@ const getAllUsers = async (req, res) => {
     }
 };
 
+const updateUser = async (req, res) => {
+    const user_id = req.params.id;
+    const param_userPassword  = req.body.password;
+    // user can't update if he didn't provide his account's password
+    if(!param_userPassword)
+        return res.status(403).send({ status: "error", message: "Please provide your password!"});
+    try {
+        const findUser = await User.findById(user_id);
+        if(!findUser)
+            return res.status(404).send({ status: "error", message: "User not found!"});
+        // checking if user entered the right password
+        const mathcedPass = await checkPass(param_userPassword, findUser.password);
+        if(!mathcedPass)
+            return res.status(501).send({ status: "error", message: "Incorrect password!"});
+        // removing password from the request so that it is not updated
+        delete req.body.password;
+        // updating user
+        const updatedUser = await User.updateOne({ _id: user_id }, req.body, { runValidators: true });
+        // updating user's token
+        const accessToken = createJWT(findUser);
+        JWT_Cookie(res, accessToken, findUser._id);
+
+        res.status(200).send({ status: "ok", user: updatedUser, token: accessToken });
+    } catch (error) {
+        const err = error.message;
+        res.status(500).send({ status: "error", message: err });
+    }
+};
+
 module.exports = {
     getAllUsers,
+    updateUser,
     getUser
 };
