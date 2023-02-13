@@ -8,8 +8,7 @@ const createPainting = (req, res) => {
         Painiting informations, the image validated by multer and the other
         Painiting informations validated by Painiting schema.
     */
-    formUpload (req, res, async (err) => 
-    {
+    formUpload (req, res, async (err) => {
         // handling image errors.
         if (err instanceof multer.MulterError) {
             // A Multer error occurred when uploading.
@@ -60,8 +59,43 @@ const getAllPainting = async (req, res) => {
     }
 }
 
+const updatePainting = async (req, res) => {
+    const painting_id = req.params.id;
+    formUpload (req, res, async (err) => {
+        // handling image errors if provided.
+        if (err instanceof multer.MulterError) {
+            return res.status(500).send({ status: "error", message: err.message });
+        } else if (err) {
+            return res.status(500).send({ status: "error", message: err.message });
+        }
+        // handling painting errors and creating it.
+        try {
+            let statusCode, statusMsg ,messageText;
+            // if user didn't provide an image old one will remain.
+            if(req.file)
+                req.body.image = req.file.path;
+            // updating the painting
+            const painting = await Painting.updateOne({ _id: painting_id }, req.body, { runValidators: true });
+            statusCode = 200;
+            statusMsg = "ok";
+            messageText = painting;
+            // if user didn't provide any values or painting not found.
+            if(!painting.matchedCount) {
+                statusCode = 404;
+                statusMsg = "error";
+                messageText = "Couldn't update painting!";
+            }
+            res.status(statusCode).send({ status: statusMsg,  message: messageText });;
+        } catch (error) {
+            const err = error.message;
+            res.status(500).send({ status: "error", message: err });
+        }
+    });
+}
+
 module.exports = {
     createPainting,
+    updatePainting,
     getAllPainting,
     getPainting
 };
