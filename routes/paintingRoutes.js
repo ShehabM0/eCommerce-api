@@ -1,7 +1,7 @@
-const addImage = require('../controllers/painting');
+const createPainting = require('../controllers/painting');
 const express = require('express');
 const router = express.Router();
 
-router.post("/add" , addImage);
+router.post("/create" , createPainting);
 
 module.exports = router;
