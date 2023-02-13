@@ -2,6 +2,7 @@ const paintingRoute = require("./routes/paintingRoutes");
 const authRoute = require("./routes/authRoutes");
 const userRoute = require("./routes/userRoutes");
 const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const express = require("express");
@@ -12,6 +13,8 @@ const app = express();
 dotenv.config();
 
 app.use(express.static(path.join(__dirname, 'uploads')));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(express.json());
 app.use(cookieParser());
 
@@ -23,7 +26,6 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
-
 
 app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);
