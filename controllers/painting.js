@@ -78,7 +78,7 @@ const updatePainting = async (req, res) => {
             const painting = await Painting.updateOne({ _id: painting_id }, req.body, { runValidators: true });
             statusCode = 200;
             statusMsg = "ok";
-            messageText = painting;
+            messageText = "Painting updated successfully.";
             // if user didn't provide any values or painting not found.
             if(!painting.matchedCount) {
                 statusCode = 404;
@@ -93,9 +93,30 @@ const updatePainting = async (req, res) => {
     });
 }
 
+const deletePainting = async (req, res) => {
+    let statusCode, statusMsg ,messageText;
+    const painting_id = req.params.id;
+    try {
+        const deletePainting = await Painting.findByIdAndDelete(painting_id);
+        statusCode = 200;
+        statusMsg = "ok";
+        messageText = "Painting deleted successfully.";
+        if(!deletePainting) {
+            statusCode = 404;
+            statusMsg = "error";
+            messageText = "Couldn't find painting!";
+        }
+        res.status(200).send({ status: "ok", message: messageText});
+    } catch (error) {
+        const err = error.message;
+        res.status(500).send({ status: "error", message: err });
+    }
+}
+
 module.exports = {
     createPainting,
     updatePainting,
+    deletePainting,
     getAllPainting,
     getPainting
 };
