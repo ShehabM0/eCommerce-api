@@ -1,4 +1,5 @@
 const paintingRoute = require("./routes/paintingRoutes");
+const cartRoutes = require("./routes/cartRoutes");
 const authRoute = require("./routes/authRoutes");
 const userRoute = require("./routes/userRoutes");
 const cookieParser = require("cookie-parser");
@@ -30,6 +31,7 @@ mongoose
 app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);
 app.use("/api/painting", paintingRoute);
+app.use("/api/cart", cartRoutes);
 
 
 try {
