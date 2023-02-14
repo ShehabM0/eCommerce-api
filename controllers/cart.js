@@ -2,6 +2,7 @@ const Painting = require("../models/Painting");
 const Cart = require("../models/Cart");
 const User = require("../models/User");
 
+// the AddToCart can be used in adding/modifying user's cart paintings
 const AddToCart = async (req, res) => {
     const painting_id = req.params.id;
     let painting_qnt = req.body.qnt;
@@ -12,14 +13,13 @@ const AddToCart = async (req, res) => {
         
     try {
         findPainting = await Painting.findById(painting_id);
+        if(!findPainting)
+            return res.status(404).send({ status: "error", message: "Painting not found!"});
     } catch (error) {
         const err = error.message;
         return res.status(501).send({ status: "error", message: err});
     }
 
-    // if painting not found.
-    if(!findPainting)
-        return res.status(404).send({ status: "error", message: "Painting not found!"});
     // validating requested 'quantitiy' value.
     if(painting_qnt < 1)
         return res.status(500).send( {status: "error", message: "Coudn't add painting to cart!"});
@@ -67,4 +67,26 @@ const AddToCart = async (req, res) => {
     }
 }
 
-module.exports = AddToCart;
+const deleteFromCart = async (req, res) => {
+    const painting_id = req.params.id;
+    const user_id = req.user.id;
+    try {
+        const findPainting = await Painting.findById(painting_id);
+        if(!findPainting)
+            return res.status(404).send({ status: "error", message: "Painting not found!"});
+        const deletePainting = await Cart.updateOne({ user_id: user_id, $pull: { paintings: { painting_id: painting_id }} });
+        if(deletePainting.modifiedCount == 1)
+            res.status(200).send({ status: "ok", message: deletePainting });
+        else
+            res.status(501).send({ status: "error", message: "Couldn't delete painting from cart!" });
+    } catch (error) {
+        const err = error.message;
+        return res.status(501).send({ status: "error", message: err});
+    }
+
+}
+
+module.exports = {
+    deleteFromCart,
+    AddToCart
+};
