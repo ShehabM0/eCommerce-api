@@ -106,7 +106,7 @@ const deletePainting = async (req, res) => {
             statusMsg = "error";
             messageText = "Couldn't find painting!";
         }
-        res.status(200).send({ status: "ok", message: messageText});
+        res.status(statusCode).send({ status: statusMsg, message: messageText});
     } catch (error) {
         const err = error.message;
         res.status(500).send({ status: "error", message: err });
