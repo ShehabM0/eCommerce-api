@@ -86,7 +86,17 @@ const deleteFromCart = async (req, res) => {
 
 }
 
+const getCart = async (req, res) => {
+    const user_id = req.user.id;
+    const findCart = await Cart.findOne({ user_id: user_id });
+    if(!findCart)
+        res.status(200).send({ status: "ok", message: "Your cart is empty" });
+    else
+        res.status(200).send({ status: "ok", message: findCart.paintings });
+}
+
 module.exports = {
     deleteFromCart,
-    AddToCart
+    AddToCart,
+    getCart
 };
