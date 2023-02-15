@@ -1,5 +1,6 @@
 const formUpload = require('../helper/formUpload');
 const Painting = require('../models/Painting');
+const Review = require('../models/Review');
 const multer = require('multer');
 
 const createPainting = (req, res) => {
@@ -32,17 +33,20 @@ const createPainting = (req, res) => {
 }
 
 const getPainting = async (req, res) => {
-    let statusCode, messageText;
+    let statusCode, messageText, reviews;
     const painting_id = req.params.id;
     try {
         const painting = await Painting.findById(painting_id);
+        const paintingReviews = await Review.find({ painting_id: painting_id});
         statusCode = 200;
         messageText = painting;
+        reviews = paintingReviews;
         if(!painting) {
             statusCode = 400;
             messageText = "The painting you are looking for doesn't exist!";
+            reviews = null
         }
-        res.status(statusCode).send({ status: "ok", message: messageText });    
+        res.status(statusCode).send({ status: "ok", message: messageText, reviews: paintingReviews });    
     } catch (error) {
         const err = error.message;
         res.status(500).send({ status: "error", message: err });
@@ -98,6 +102,7 @@ const deletePainting = async (req, res) => {
     const painting_id = req.params.id;
     try {
         const deletePainting = await Painting.findByIdAndDelete(painting_id);
+        const deletePaintingReviews = await Review.deleteMany({ painting_id: painting_id });
         statusCode = 200;
         statusMsg = "ok";
         messageText = "Painting deleted successfully.";
