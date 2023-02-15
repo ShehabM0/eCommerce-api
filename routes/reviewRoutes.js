@@ -5,6 +5,6 @@ const express = require("express");
 const router = express.Router();
 
 router.delete("/delete/:id", [verifyToken, currUserOradmin], deleteReview);
-router.post("/edit/:id", [verifyToken, currUserOradmin], editReview);
+router.patch("/edit/:id", [verifyToken, currUserOradmin], editReview);
 router.post("/add/:id", [verifyToken, currUserOradmin], addReview);
 module.exports = router;
