@@ -13,7 +13,7 @@ const createUser = async (req) => {
       city: req.body.city,
       state: req.body.state,
       phone_number: req.body.phone_number,
-      money: Math.floor(Math.random() * (10000 - 1000) + 1000),
+      money: Math.floor(Math.random() * (1e6 - 10000) + 10000),
       adress: req.body.adress,
       admin: req.body.admin,
     });

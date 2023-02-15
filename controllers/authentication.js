@@ -14,7 +14,7 @@ const register = async (req, res) => {
         return res.status(501).send({ status: "error", message: "email already exists!" })
 
     const addUser = await createUser(req);
-    if (req.body.admin) addUser.money = 10000;
+    if (req.body.admin) addUser.money = 1e6;
     try {
         const savedUser = await addUser.save();
         res.status(201).send({ status: "ok", message: "User Created Successfully", user: savedUser });
