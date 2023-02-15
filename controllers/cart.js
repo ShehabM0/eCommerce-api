@@ -2,7 +2,12 @@ const Painting = require("../models/Painting");
 const Cart = require("../models/Cart");
 const User = require("../models/User");
 
-// the AddToCart can be used in adding/modifying user's cart paintings
+
+/*
+   returns (created/modified) cart.
+   @param {painting id} painting id that user want to (add/modify) to his cart.
+   @param {painting quantity} the quantity that user want to (add/modify) to his cart.
+*/
 const AddToCart = async (req, res) => {
     const painting_id = req.params.id;
     let painting_qnt = req.body.qnt;
@@ -83,9 +88,9 @@ const deleteFromCart = async (req, res) => {
         const err = error.message;
         return res.status(501).send({ status: "error", message: err});
     }
-
 }
 
+// returns current user's cart.
 const getCart = async (req, res) => {
     const user_id = req.user.id;
     const findCart = await Cart.findOne({ user_id: user_id });
@@ -95,8 +100,33 @@ const getCart = async (req, res) => {
         res.status(200).send({ status: "ok", message: findCart.paintings });
 }
 
+/*
+   returns given user's cart.
+   @param {user_id} user_id you want to get his cart.
+*/
+const getUserCart = async (req, res) => {
+    const user_id = req.body.user_id;
+    try {
+        const findUserCart = await Cart.findOne({ user_id: user_id });
+        if(!findUserCart)
+            res.status(200).send({ status: "ok", message: "User's cart is empty!" });
+        else
+            res.status(200).send({ status: "ok", message: findUserCart.paintings });
+    } catch (error) {
+        const err = error.message;
+        return res.status(501).send({ status: "error", message: err });
+    }
+}
+
+const getAllCarts = async (req, res) => {
+    const findAllCarts = await Cart.find();
+    res.status(200).send({ status: "ok", message: findAllCarts });
+}
+
 module.exports = {
     deleteFromCart,
+    getUserCart,
+    getAllCarts,
     AddToCart,
     getCart
 };
