@@ -1,5 +1,6 @@
 const paintingRoute = require("./routes/paintingRoutes");
 const purchaseRoute = require("./routes/purchaseRoutes");
+const reviewRoute = require("./routes/reviewRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const authRoute = require("./routes/authRoutes");
 const userRoute = require("./routes/userRoutes");
@@ -31,9 +32,11 @@ mongoose
 
 app.use("/api/painting", paintingRoute);
 app.use("/api/purchase", purchaseRoute);
+app.use("/api/review", reviewRoute);
+app.use("/api/cart", cartRoutes);
 app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);
-app.use("/api/cart", cartRoutes);
+
 
 
 try {
