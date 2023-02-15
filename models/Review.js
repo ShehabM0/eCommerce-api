@@ -13,6 +13,13 @@ const reviewSchema = new mongoose.Schema({
         ref: "Painting",
         required: true
     },
+    stars:
+    {
+        type: Number,
+        max: 5,
+        min: 1,
+        required: true
+    },
     review:
     {
         type: String,
